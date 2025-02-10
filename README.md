@@ -11,3 +11,5 @@ Branch Token-jwt
 - npm install @types/jsonwebtoken
 - npm install dotenv
 - npm install --save-dev @types/dotenv
+
+Branch criacao-de-models

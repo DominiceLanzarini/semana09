@@ -11,7 +11,10 @@ import userRouter from "./routes/user.routes";
 import authRouter from "./routes/auth.routes";
 import medicamentosRouter from "./routes/medicamentos.routes";
 
-import authenticate from "./middleware/authenticate"
+import authenticate from "./middleware/authenticate";
+
+import Role from "./entity/Role";
+import Permission from ".entity/Permission";
 
 app.use(cors());
 app.use(express.json());

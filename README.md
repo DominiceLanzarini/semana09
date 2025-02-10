@@ -5,3 +5,9 @@ Steps to run this project:
 1. Run `npm i` command
 2. Setup database settings inside `data-source.ts` file
 3. Run `npm start` command
+
+Branch Token-jwt
+- npm install jsonwebtoken
+- npm install @types/jsonwebtoken
+- npm install dotenv
+- npm install --save-dev @types/dotenv

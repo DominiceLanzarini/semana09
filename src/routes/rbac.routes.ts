@@ -1,8 +1,8 @@
 import { Request, Response, Router } from "express";
 import { AppDataSource } from "../data-source";
 import { Permission } from "../entity/Permission";
-import Role from "../entity/Role";
-import { User } from "../entity/User";
+import  Role  from "../entity/Role";
+import  User  from "../entity/User";
 
 const userRepository = AppDataSource.getRepository(User);
 const roleRepository = AppDataSource.getRepository(Role);
@@ -11,7 +11,7 @@ const permissionRepository = AppDataSource.getRepository(Permission);
 const rbacRouter = Router();
 
 // listar todas as roles
-rbacRouter.get("/listAllRoles", async (req: Request, res: Response) => {
+rbacRouter.get("/listRoles", async (req: Request, res: Response) => {
   try {
     const roles = await roleRepository.find({
       relations: ["permissions"],
@@ -24,7 +24,7 @@ rbacRouter.get("/listAllRoles", async (req: Request, res: Response) => {
 });
 
 // listar todas as permissions
-rbacRouter.get("/listAddPermissions", async (req: Request, res: Response) => {
+rbacRouter.get("/listPermissions", async (req: Request, res: Response) => {
   try {
     const permissions = await permissionRepository.find();
 
@@ -35,7 +35,7 @@ rbacRouter.get("/listAddPermissions", async (req: Request, res: Response) => {
 });
 
 // criar uma role
-rbacRouter.post("/addRole", async (req: Request, res: Response) => {
+rbacRouter.post("/createOneRole", async (req: Request, res: Response) => {
   try {
     const roleBody = req.body as Role;
 
@@ -52,7 +52,7 @@ rbacRouter.post("/addRole", async (req: Request, res: Response) => {
 });
 
 // criar uma permission
-rbacRouter.post("/", async (req: Request, res: Response) => {
+rbacRouter.post("/createOnePermission", async (req: Request, res: Response) => {
   try {
     const permissionBody = req.body as Permission;
 
@@ -119,7 +119,7 @@ rbacRouter.post("/addPermissionToRole", async (req: Request, res: Response) => {
 });
 
 // adicionar uma role a um usuario
-rbacRouter.get("/addRoleToUser", async (req: Request, res: Response) => {
+rbacRouter.post("/addRoleToUser", async (req: Request, res: Response) => {
   try {
     const userRoleBody = req.body as {
       roleId: number;
@@ -159,6 +159,28 @@ rbacRouter.get("/addRoleToUser", async (req: Request, res: Response) => {
     await userRepository.save(user);
 
     res.status(201).json(user);
+  } catch {
+    res.status(500).json("Erro ao processar solicitação!");
+  }
+});
+
+//listar permissao por role
+rbacRouter.get("/listPermissionByRole", async (req: Request, res: Response) => {
+  try {
+    const roleId = req.params;
+
+    const roleRepository = AppDataSource.getRepository(Role);
+
+    const role = await roleRepository.findOne({
+      where: { id: Number(roleId) },
+      relations: ["permissions"],
+    });
+
+    if (!role) {
+      res.status(404).json("Role não encontrada!");
+    }
+
+    res.json(role);
   } catch {
     res.status(500).json("Erro ao processar solicitação!");
   }

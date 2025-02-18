@@ -1,21 +1,21 @@
 import { Request, Response, Router } from "express";
 import { AppDataSource } from "../data-source";
-import { Medicamento } from "../entity/Medicamento";
+import { Medicine } from "../entity/Medicine";
 
-const medicamentosRouter = Router()
+const medicineRouter = Router()
 
-const medicamentoRepository = AppDataSource.getRepository(Medicamento)
+const medicineRepository = AppDataSource.getRepository(Medicine)
 
-medicamentosRouter.post("/", async (req: Request, res: Response) => {
+medicineRouter.post("/", async (req: Request, res: Response) => {
     try {
-        const medBody = req.body as Medicamento
+        const medBody = req.body as Medicine
 
-        if(!medBody || !medBody.nome || !medBody.quantidade || !medBody.userId || !medBody.descricao){
+        if(!medBody || !medBody.name || !medBody.quantity || !medBody.userId || !medBody.description){
             res.status(400).json("Preencha todos os dados!")
             return
         }
 
-        await medicamentoRepository.save(medBody)
+        await medicineRepository.save(medBody)
 
         res.status(201).json(medBody)
 
@@ -24,7 +24,7 @@ medicamentosRouter.post("/", async (req: Request, res: Response) => {
     }
 })
 
-medicamentosRouter.get("/", async (req: Request, res: Response) => {
+medicineRouter.get("/", async (req: Request, res: Response) => {
     try {
         const userId = Number(req.headers.userid)
 
@@ -38,7 +38,7 @@ medicamentosRouter.get("/", async (req: Request, res: Response) => {
 
         const skip = page > 1 ? (page - 1) * limit : 0;
 
-        const result = await medicamentoRepository.find({
+        const result = await medicineRepository.find({
             where: {
                 userId: userId
             },
@@ -57,9 +57,9 @@ medicamentosRouter.get("/", async (req: Request, res: Response) => {
     }
 })
 
-medicamentosRouter.get("/:id", async (req: Request, res: Response) => {
+medicineRouter.get("/:id", async (req: Request, res: Response) => {
     try {
-        const result = await medicamentoRepository.findOne({
+        const result = await medicineRepository.findOne({
             where: {
                 id: Number(req.params.id)
             }
@@ -76,14 +76,14 @@ medicamentosRouter.get("/:id", async (req: Request, res: Response) => {
     }
 })
 
-medicamentosRouter.get("/all", async (req: Request, res: Response) => {
+medicineRouter.get("/all", async (req: Request, res: Response) => {
     try {
         const page = Number(req.query.page ?? 1);
         const limit = Number(req.query.limit ?? 10);
 
         const skip = page > 1 ? (page - 1) * limit : 0;
 
-        const result = await medicamentoRepository.find({
+        const result = await medicineRepository.find({
             skip: skip, // 20 - 30
             take: limit
         })
@@ -99,7 +99,7 @@ medicamentosRouter.get("/all", async (req: Request, res: Response) => {
     }
 })
 
-medicamentosRouter.put("/:id", async (req: Request, res: Response) => {
+medicineRouter.put("/:id", async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id)
 
@@ -110,31 +110,31 @@ medicamentosRouter.put("/:id", async (req: Request, res: Response) => {
             return
         }
 
-        const medBody = req.body as Medicamento
+        const medBody = req.body as Medicine
 
-        const medicamento = await medicamentoRepository.findOne({where: {
+        const medicine = await medicineRepository.findOne({where: {
             id: id,
             userId: userId
         }})
 
-        if(!medicamento){
+        if(!medicine){
             res.status(200).json("Nenhum medicamento encontrado!")
             return
         }
 
         // vai copiar os dados que vieram do body para o medicamento que veio do banco
-        Object.assign(medicamento, medBody)
+        Object.assign(medicine, medBody)
 
-        await medicamentoRepository.save(medicamento)
+        await medicineRepository.save(medicine)
 
-        res.status(200).json(medicamento)
+        res.status(200).json(medicine)
 
     } catch (ex){
         res.status(500).json("Não foi possível executar a solicitação!")
     }
 })
 
-medicamentosRouter.delete("/:id", async (req: Request, res: Response) => {
+medicineRouter.delete("/:id", async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id)
 
@@ -145,17 +145,17 @@ medicamentosRouter.delete("/:id", async (req: Request, res: Response) => {
             return
         }
 
-        const medicamento = await medicamentoRepository.findOne({where: {
+        const medicine = await medicineRepository.findOne({where: {
             id: id,
             userId: userId
         }})
 
-        if(!medicamento){
+        if(!medicine){
             res.status(200).json("Nenhum medicamento encontrado!")
             return
         }
 
-        await medicamentoRepository.remove(medicamento);
+        await medicineRepository.remove(medicine);
 
         res.status(200).json("Medicamento removido com sucesso!")
 
@@ -164,4 +164,4 @@ medicamentosRouter.delete("/:id", async (req: Request, res: Response) => {
     }
 })
 
-export default medicamentosRouter
+export default medicineRouter

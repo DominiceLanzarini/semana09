@@ -1,9 +1,11 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import Role from "./Role";
 
@@ -12,13 +14,16 @@ export class Permission {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({unique: true})
   description: string;
 
-  @Column({ default: new Date() })
+  @CreateDateColumn()
   createdAt: Date;
 
+  @UpdateDateColumn()
+  updatedAt: Date;
+
   @ManyToMany(() => Role)
-  @JoinTable({ name: "PermissionRoles" })
+  @JoinTable({ name: "permissionRoles" })
   roles: Role[];
 }

@@ -1,11 +1,13 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
-import { User } from "./User";
+import  User  from "./User";
 import { Permission } from "./Permission";
 
 @Entity()
@@ -13,17 +15,20 @@ export default class Role {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({unique: true})
   description: string;
 
-  @Column({ default: new Date })
+  @CreateDateColumn()
   createdAt: Date;
 
+  @UpdateDateColumn()
+  updatedAt: Date;
+
   @ManyToMany(() => User)
-  @JoinTable({ name: "UserRoles" })
+  @JoinTable({ name: "userRoles" })
   users: User[];
 
   @ManyToMany(() => Permission)
-  @JoinTable({name: 'PermissionRoles'})
+  @JoinTable({name: 'permissionRoles'})
   permissions: Permission[]
 }

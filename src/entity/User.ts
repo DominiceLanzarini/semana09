@@ -8,20 +8,26 @@ import {
 import Role from "./Role";
 
 @Entity()
-export class User {
+export default class  User {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  nome: string;
+  firstName: string;
+
+  @Column()
+  lastName: string;
+
+  @Column()
+  age: number;
 
   @Column()
   email: string;
 
   @Column()
-  senha: string;
+  password: string;
 
   @ManyToMany(() => Role)
-  @JoinTable({ name: "UserRoles" })
+  @JoinTable({ name: "userRoles" })
   roles: Role[];
 }

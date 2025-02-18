@@ -5,28 +5,27 @@ import { AppDataSource } from "./data-source";
 import express from "express";
 import cors from "cors";
 
-const app = express();
-
 import userRouter from "./routes/user.routes";
 import authRouter from "./routes/auth.routes";
-import medicamentosRouter from "./routes/medicamentos.routes";
+import medicineRouter from "./routes/medicine.routes";
+import rbacRouter from "./routes/rbac.routes";
 
-import authenticate from "./middleware/authenticate";
 
-import Role from "./entity/Role";
-import Permission from ".entity/Permission";
+
+const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/users", authenticate, userRouter);
+app.use("/users", userRouter);
 app.use("/login", authRouter);
-app.use("/medicamentos", medicamentosRouter);
+app.use("/medicine", medicineRouter);
+app.use("/rbac", rbacRouter);
 
 AppDataSource.initialize()
   .then(async () => {
-    app.listen(3000, () => {
-      console.log("Servidor rodando na porta http://localhost:3000");
+    app.listen(process.env.PORT, () => {
+      console.log("Servidor rodando na porta: ", process.env.PORT);
     });
   })
   .catch((error) => console.log(error));
